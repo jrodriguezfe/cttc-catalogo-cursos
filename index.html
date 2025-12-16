@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parrilla CTTC-SENATI | Cursos del Mes</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="style.css"> 
+</head>
+<body>
+
+    <header class="navbar navbar-expand-lg bg-principal border-bottom shadow-sm sticky-top">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="#" onclick="showSection('parrilla')">
+                <img src="https://i.postimg.cc/3rLLhvKH/logo-cttc.jpg" alt="Logo CTTC-SENATI" style="height: 65px; margin-right: 10px;" onerror="this.src='https://placehold.co/65x65?text=Logo'">
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="#" onclick="showSection('parrilla')"><i class="bi bi-grid-3x3-gap-fill"></i> Parrilla del Mes</a></li>
+                    
+                    <li class="nav-item d-none" id="nav-admin-link"><a class="nav-link" href="#" onclick="showSection('admin-dashboard')"><i class="bi bi-gear-fill"></i> Admin</a></li>
+                    <li class="nav-item d-none" id="nav-logout-link"><a class="nav-link" href="#" onclick="logoutAdmin()"><i class="bi bi-box-arrow-right"></i> Salir</a></li>
+                    <li class="nav-item" id="nav-login-link"><a class="nav-link" href="#" onclick="showSection('login-section')"><i class="bi bi-box-arrow-in-left"></i> Login</a></li>
+                </ul>
+            </div>
+        </div>
+    </header>
+
+    <main class="container my-5">
+        
+        <section id="login-section" class="spa-section" style="display:none;">
+            <div class="row justify-content-center">
+                <div class="col-md-6">
+                    <h2 class="mb-4 text-center">Acceso de Administrador</h2>
+                    <div class="card p-4 shadow-sm">
+                        <form id="loginForm">
+                            <div class="mb-3">
+                                <label for="loginEmail" class="form-label">Email</label>
+                                <input type="email" class="form-control" id="loginEmail" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="loginPassword" class="form-label">Contraseña</label>
+                                <input type="password" class="form-control" id="loginPassword" required>
+                            </div>
+                            <button type="submit" class="btn btn-acento-principal w-100">Iniciar Sesión</button>
+                            <p class="text-danger mt-3 d-none" id="login-error-message"></p>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="parrilla" class="spa-section active">
+            <h1 class="mb-4 display-5">Parrilla de Cursos para <span class="text-acento fw-bold" id="currentMonthName">Cargando...</span></h1>
+            
+            <div class="row mb-4 align-items-center">
+                <div class="col-md-4">
+                    <label for="monthYearSelector" class="form-label fw-bold">Seleccionar Periodo:</label>
+                    <select class="form-select" id="monthYearSelector" onchange="actualizarTodo()">
+                    </select>
+                </div>
+                <div class="col-md-8">
+                    <p class="lead mt-3 mt-md-0">Listado de los cursos activos que inician en el mes seleccionado.</p>
+                </div>
+            </div>
+            <hr>
+            
+            <div class="parrilla-wrapper">
+                <button class="scroll-btn scroll-btn-left" onclick="scrollParrilla(-350)">
+                    <i class="bi bi-chevron-left"></i>
+                </button>
+            
+                <div id="parrilla-container" class="parrilla-horizontal">
+                    <div class="text-center p-5">
+                        <div class="spinner-border text-acento"></div>
+                        <p>Cargando cursos...</p>
+                    </div>
+                </div>
+
+                <button class="scroll-btn scroll-btn-right" onclick="scrollParrilla(350)">
+                    <i class="bi bi-chevron-right"></i>
+                </button>
+            </div>
+        </section>
+
+        <section id="admin-dashboard" class="spa-section" style="display:none;">
+            <h2 class="mb-4 text-center">Administración de Cursos Base</h2>
+
+            <div class="row mb-4 justify-content-center">
+                <div class="col-md-4">
+                    <label class="form-label fw-bold">Filtrar lista por mes:</label>
+                    <select class="form-select border-primary" id="adminMonthSelector" onchange="loadAdminList()">
+                        </select>
+                </div>
+            </div>
+
+            <button class="btn btn-lg btn-acento-invert w-100 mb-4" onclick="showSection('admin-form', true)">
+                <i class="bi bi-plus-circle"></i> Nuevo Curso Base
+            </button>
+
+            <div id="admin-list-container">
+                <div class="text-center p-5"><div class="spinner-border text-acento"></div></div>
+            </div>
+        </section>
+        
+        <section id="admin-form" class="spa-section" style="display:none;">
+            <h2 class="mb-4" id="form-title">Crear Nuevo Curso Base</h2>
+            <form id="cursoForm">
+                
+                <div class="card p-4 mb-4 shadow-sm bg-info-subtle border-info">
+                    <h5 class="card-title text-info-emphasis"><i class="bi bi-search"></i> ¿Duplicar un curso existente?</h5>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" id="searchCourseInput" placeholder="Escriba el nombre o programa del curso..." aria-label="Buscar curso existente">
+                        <button class="btn btn-info" type="button" onclick="filterExistingCourses()">Buscar</button>
+                    </div>
+                    
+                    <div id="searchResults" class="list-group">
+                        </div>
+                </div>
+                <div class="card p-4 mb-4 shadow-sm bg-light">
+                    <h5 class="card-title">Información Base del Curso (Plantilla)</h5>
+                    <div class="mb-3">
+                        <label for="titulo" class="form-label">Nombre del Curso</label>
+                        <input type="text" class="form-control" id="titulo" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="programa" class="form-label">Programa al que Pertenece</label>
+                        <input type="text" class="form-control" id="programa" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="descripcion" class="form-label">Breve Descripción</label>
+                        <textarea class="form-control" id="descripcion" rows="3" required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="duracion" class="form-label">Duración (ej: 40 horas / 5 sesiones)</label>
+                        <input type="text" class="form-control" id="duracion" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="modalidad" class="form-label">Modalidad</label>
+                        <select class="form-select" id="modalidad">
+                            <option value="Online">Online</option>
+                            <option value="Presencial">Presencial</option>
+                            <option value="Semipresencial">Semipresencial</option>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="imagenUrl" class="form-label">URL de Imagen (300x180 px recomendado)</label>
+                        <input type="text" class="form-control" id="imagenUrl" value="images/default-course.jpg">
+                    </div>
+
+                    <input type="hidden" id="categoria" value="Programa"> 
+                </div>
+
+                <div class="card p-4 mb-4 shadow-sm bg-acento-claro">
+                    <h5 class="card-title">Configuración de la Instancia Mensual <span class="badge bg-danger ms-2" id="is-new-instance-badge"></span></h5>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="fechaInicio" class="form-label">Fecha de Inicio (YYYY-MM-DD)</label>
+                            <input type="date" class="form-control" id="fechaInicio" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="horario" class="form-label">Horario (Ej: Lunes a Miércoles de 7pm a 10pm)</label>
+                            <input type="text" class="form-control" id="horario" required>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="costo" class="form-label">Costo (S/)</label>
+                            <input type="text" class="form-control" id="costo" value="0.00" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="vacantesTotal" class="form-label">Vacantes Totales</label>
+                            <input type="number" class="form-control" id="vacantesTotal" value="20" required>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="vacantesOcupadas" class="form-label">Vacantes Ocupadas</label>
+                            <input type="number" class="form-control" id="vacantesOcupadas" value="0" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="estado" class="form-label">Estado de la Instancia</label>
+                            <select class="form-select" id="estado">
+                                <option value="Activo">Activo (Visible en Parrilla)</option>
+                                <option value="Inactivo">Inactivo (Oculto)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="d-flex justify-content-between">
+                    <button type="button" class="btn btn-outline-secondary" onclick="showSection('admin-dashboard')">Cancelar</button>
+                    <button type="submit" class="btn btn-lg btn-acento-principal">Guardar Configuración</button>
+                </div>
+            </form>
+        </section>
+        
+    </main>
+
+    <a href="https://wa.me/51954622231" class="whatsapp-float" target="_blank"><i class="bi bi-whatsapp"></i></a>
+
+    <footer class="site-footer">
+        <div class="container">
+            <p>&copy; 2024 CTTC SENATI. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+
+    <script>
+        // ⚠️ DEBE REEMPLAZAR ESTAS CLAVES CON LAS DE SU PROYECTO REAL EN FIREBASE
+        const firebaseConfig = {
+            apiKey: "AIzaSyBO4LcHoHbwr-zzTbkjlj5luzFygeOP2Yw",
+            authDomain: "cttc-catalogo-parrilla.firebaseapp.com",
+            projectId: "cttc-catalogo-parrilla",
+            storageBucket: "cttc-catalogo-parrilla.firebasestorage.app",
+            messagingSenderId: "187009091948",
+            appId: "1:187009091948:web:1a13ce0d54643977548b49"
+        };
+        
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        const auth = firebase.auth();
+    </script>
+
+    <script src="app.js"></script>
+</body>
+</html>

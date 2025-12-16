@@ -1,0 +1,220 @@
+/* style.css - cttc-catalogo-parrilla */
+
+/* Variables */
+:root {
+    --color-principal: #000000;   /* Negro Puro */
+    --color-acento: #a0d9b4;      /* Verde Claro SENATI */
+    --color-acento-principal: #008f39; /* Verde Oscuro SENATI para botones */
+    --color-acento-claro: #f0fff4; /* Fondo para formularios */
+    --color-claro: #f0f2f5;       /* Gris Fondo */
+    --color-texto-claro: #ffffff;
+}
+
+body { font-family: 'Roboto', sans-serif; background-color: var(--color-claro); color: var(--color-principal); }
+
+/* Tipografía y Utilidades */
+h1, h2, h3, h4 { font-weight: 700; color: var(--color-principal); }
+.text-acento { color: var(--color-acento-principal) !important; }
+.display-5 { font-size: 2.5rem; }
+
+/* Navbar */
+.bg-principal { background-color: var(--color-principal) !important; }
+.nav-link { color: var(--color-texto-claro) !important; font-weight: 500; }
+.nav-link:hover { color: var(--color-acento) !important; }
+.navbar-toggler-icon { background-image: url("data:image/svg+xml,%3csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3e%3cpath stroke='white' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e"); }
+
+/* Botones */
+.btn-acento-principal { 
+    background-color: var(--color-acento-principal); 
+    color: white; 
+    border: none;
+    transition: background-color 0.3s;
+}
+.btn-acento-principal:hover {
+    background-color: #006b2a; 
+    color: white; 
+}
+.btn-acento-invert {
+    background-color: var(--color-acento);
+    color: var(--color-principal);
+    border: 1px solid var(--color-acento-principal);
+}
+.btn-acento-invert:hover {
+    background-color: var(--color-acento-principal);
+    color: white;
+}
+.bg-acento { background-color: var(--color-acento-principal) !important; color: white !important; }
+.bg-acento-claro { background-color: var(--color-acento-claro) !important; }
+
+
+/* ESTILOS DE PARRILLA HORIZONTAL */
+/* --- Estilos de la Cartelera Horizontal --- */
+/* Contenedor de las tarjetas */
+.parrilla-horizontal {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    gap: 20px;
+    padding: 10px 0;
+    scrollbar-width: none;
+}
+
+.parrilla-horizontal::-webkit-scrollbar {
+    display: none;
+}
+
+/* FIJAR ANCHO DE TARJETAS (Evita que se reduzcan como en tu primera foto) */
+.parrilla-horizontal .card-item-horizontal {
+    flex: 0 0 320px; 
+    width: 320px;
+    max-width: 320px;
+}
+
+/* --- Posicionamiento de Flechas a la mitad de la tarjeta --- */
+.parrilla-wrapper {
+    position: relative;
+    display: block; /* Cambiamos de flex a block para controlar mejor los absolutos */
+    width: 100%;
+    margin-top: 20px;
+}
+
+
+/* Tarjetas de la Parrilla */
+.card-parrilla {
+    border: 1px solid var(--color-acento);
+    transition: transform 0.3s, box-shadow 0.3s;
+    overflow: hidden;
+}
+.card-parrilla:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+.card-parrilla .card-img-top {
+    height: 180px;
+    object-fit: cover;
+}
+
+/* Indicador de Vacantes */
+.badge-vacantes {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    padding: 8px 12px;
+    font-size: 0.9em;
+    font-weight: bold;
+    z-index: 5;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+}
+.badge-completo { background-color: #dc3545 !important; color: white; } /* Rojo */
+.badge-vacantes-disponibles { background-color: var(--color-acento-principal) !important; color: white; } /* Verde */
+
+/* Descripción Desplegable (Interactividad) */
+.desc-toggle {
+    transition: max-height 0.3s ease-in-out, opacity 0.3s;
+    overflow: hidden;
+    max-height: 0;
+    opacity: 0;
+}
+.desc-toggle.show {
+    max-height: 500px; /* Suficiente para el contenido */
+    opacity: 1;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px dashed #ccc;
+}
+
+/* Footer & WhatsApp */
+.site-footer {
+    background-color: var(--color-principal);
+    color: var(--color-texto-claro);
+    padding: 20px 0;
+    margin-top: 50px;
+    text-align: center;
+}
+.whatsapp-float {
+    position: fixed;
+    width: 60px;
+    height: 60px;
+    bottom: 40px;
+    right: 40px;
+    background-color: #dfd5d9;
+    color: #1f995e;
+    border-radius: 50px;
+    text-align: center;
+    font-size: 30px;
+    box-shadow: 2px 2px 3px #999;
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-decoration: none;
+}
+.whatsapp-float i {
+    margin-top: 0;
+}
+
+/* --- MEJORAS DE NAVEGACIÓN Y VISIBILIDAD --- */
+
+/* Ocultar botón salir por defecto */
+#nav-logout-link { 
+    display: none !important; 
+}
+
+/* Solo mostrar botón salir si el administrador está logueado */
+body.admin-logged-in #nav-logout-link { 
+    display: block !important; 
+}
+
+/* Contenedor relativo para posicionar las flechas */
+.parrilla-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center; /* Alineación vertical */
+    width: 100%;
+}
+
+/* Botones laterales de navegación */
+/* BOTONES DE NAVEGACIÓN */
+.scroll-btn {
+    position: absolute;
+    /* Ajuste para centrar respecto a la tarjeta */
+    top: 50%; 
+    transform: translateY(-50%); 
+    z-index: 10;
+    background-color: #178f37(--color-acento-principal);
+    color: rgb(0, 0, 0);
+    border: none;
+    border-radius: 50%;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+/* Posicionamiento lateral */
+.scroll-btn-left {
+    left: -20px; 
+}
+
+.scroll-btn-right {
+    right: -20px;
+}
+
+.scroll-btn i {
+    font-size: 1.6rem;
+    line-height: 0;
+}
+
+.scroll-btn:hover {
+    background-color: #b2dac1;
+    transform: translateY(-50%) scale(1.1);
+}
+
+@media (max-width: 768px) {
+    .scroll-btn { display: none; }
+}
