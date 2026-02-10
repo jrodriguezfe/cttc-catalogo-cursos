@@ -92,11 +92,16 @@
         <section id="admin-dashboard" class="spa-section" style="display:none;">
             <h2 class="mb-4 text-center">Administración de Cursos Base</h2>
 
-            <div class="row mb-4 justify-content-center">
+            <div class="row mb-4 justify-content-center align-items-end">
                 <div class="col-md-4">
                     <label class="form-label fw-bold">Filtrar lista por mes:</label>
                     <select class="form-select border-primary" id="adminMonthSelector" onchange="loadAdminList()">
                         </select>
+                </div>
+                <div class="col-md-2">
+                    <button class="btn btn-danger w-100" onclick="downloadAdminPDF()">
+                        <i class="bi bi-file-earmark-pdf"></i> Descargar PDF
+                    </button>
                 </div>
             </div>
 
@@ -217,6 +222,9 @@
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
 
     <script>
         // ⚠️ DEBE REEMPLAZAR ESTAS CLAVES CON LAS DE SU PROYECTO REAL EN FIREBASE

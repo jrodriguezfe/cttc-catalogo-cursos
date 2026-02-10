@@ -502,6 +502,59 @@ function editNewGroup(id, isNewInstance) {
     showSection('admin-form');
 }
 
+/**
+ * Genera y descarga un PDF con los cursos del mes seleccionado en el panel admin.
+ */
+function downloadAdminPDF() {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF('l', 'mm', 'a4'); // Orientación horizontal para mayor legibilidad
+
+    const selector = document.getElementById('adminMonthSelector');
+    const monthText = selector.options[selector.selectedIndex].text;
+    const selectedValue = selector.value;
+    
+    if (!selectedValue) return;
+
+    const parts = selectedValue.split('-');
+    const targetYear = parseInt(parts[0]);
+    const targetMonth = parseInt(parts[1]);
+
+    const programasFiltrados = allProgramas.filter(p => {
+        if (!p.fechaInicio) return false;
+        const parts = p.fechaInicio.split('-');
+        return parseInt(parts[0]) === targetYear && parseInt(parts[1]) === targetMonth;
+    }).sort((a, b) => new Date(a.fechaInicio) - new Date(b.fechaInicio));
+
+    if (programasFiltrados.length === 0) {
+        alert("No hay cursos para exportar en este periodo.");
+        return;
+    }
+
+    doc.setFontSize(18);
+    doc.setTextColor(0, 143, 57); // Verde SENATI
+    doc.text(`Catálogo de Cursos - ${monthText}`, 14, 20);
+    
+    const tableRows = programasFiltrados.map(p => [
+        p.titulo,
+        p.modalidad || 'N/A',
+        `${formatDate(p.fechaInicio)}\n${p.horario || 'N/A'}`,
+        `S/ ${p.costo || '0.00'}\nVacantes: ${(p.vacantesTotal || 0) - (p.vacantesOcupadas || 0)}`,
+        p.descripcion || 'Sin descripción'
+    ]);
+
+    doc.autoTable({
+        startY: 30,
+        head: [['Curso', 'Modalidad', 'Inicio / Horario', 'Costo / Vacantes', 'Descripción']],
+        body: tableRows,
+        theme: 'grid',
+        headStyles: { fillColor: [0, 143, 57] },
+        styles: { fontSize: 9, overflow: 'linebreak' },
+        columnStyles: { 4: { cellWidth: 80 } } // Espacio extra para la descripción
+    });
+
+    doc.save(`Cursos_CTTC_${monthText.replace(' ', '_')}.pdf`);
+}
+
 function eliminarPrograma(id) {
     if (!auth.currentUser) {
         alert("Operación denegada. Debe iniciar sesión como administrador para eliminar.");
